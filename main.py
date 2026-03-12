@@ -44,8 +44,7 @@ def main():
             for shot in shots:
                 if shot.collides_with(asteroid):                    
                     log_event("asteroid_shot")
-                    global score
-                    score += 50
+                    update_score(50)
                     asteroid.split()
                     shot.kill()
                     
