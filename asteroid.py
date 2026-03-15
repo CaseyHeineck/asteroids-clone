@@ -31,30 +31,20 @@ class Asteroid(CircleShape):
     
     def split_factor(self, angle):
         factor = 0
-        if angle <= 90:
-            factor = 1 - (angle / 90)
-            if factor < MIN_ASTEROID_SPLIT_FACTOR:
-                return MIN_ASTEROID_SPLIT_FACTOR
-            else:
-                return factor
-        elif angle <= 180:
-            angle = angle - 90
-            factor = 1 - (angle / 90)
-            if factor < MIN_ASTEROID_SPLIT_FACTOR:
-                return MIN_ASTEROID_SPLIT_FACTOR
-            else:
-                return factor
-        elif angle <= 270:
+        if angle > 270 and angle <= 360:
+            angle = angle - 270
+            factor = 1 - (angle / 90)   
+        elif angle > 180 and angle <= 270:
             angle = angle - 180
             factor = 1 - (angle / 90)
-            if factor < MIN_ASTEROID_SPLIT_FACTOR:
-                return MIN_ASTEROID_SPLIT_FACTOR
-            else:
-                return factor
-        elif angle <= 360:
-            angle = angle - 270
+        elif angle > 90 and angle <= 180:
+            angle = angle - 90
             factor = 1 - (angle / 90)
-            if factor < MIN_ASTEROID_SPLIT_FACTOR:
-                return MIN_ASTEROID_SPLIT_FACTOR
-            else:
-                return factor    
+        elif angle > 0 and angle <= 90:
+            factor = 1 - (angle / 90)
+        else:
+            raise ValueError
+        if factor < MIN_ASTEROID_SPLIT_FACTOR:
+            return MIN_ASTEROID_SPLIT_FACTOR
+        else:
+            return factor
