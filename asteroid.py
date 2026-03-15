@@ -27,33 +27,33 @@ class Asteroid(CircleShape):
             asteroid1 = Asteroid(self.position.x, self.position.y, new_radius)
             asteroid1.velocity = first * self.split_factor(angle1) * ASTEROID_SPLIT_ACCELERATION
             asteroid2 = Asteroid(self.position.x, self.position.y, new_radius)
-            asteroid2.velocity = second * self.split_factor(angle1) * ASTEROID_SPLIT_ACCELERATION
+            asteroid2.velocity = second * self.split_factor(angle2) * ASTEROID_SPLIT_ACCELERATION
     
     def split_factor(self, angle):
         factor = 0
         if angle <= 90:
-            factor = (angle / 90)
+            factor = 1 - (angle / 90)
             if factor < MIN_ASTEROID_SPLIT_FACTOR:
                 return MIN_ASTEROID_SPLIT_FACTOR
             else:
                 return factor
         elif angle <= 180:
             angle = angle - 90
-            factor = (angle / 90)
+            factor = 1 - (angle / 90)
             if factor < MIN_ASTEROID_SPLIT_FACTOR:
                 return MIN_ASTEROID_SPLIT_FACTOR
             else:
                 return factor
         elif angle <= 270:
             angle = angle - 180
-            factor = (angle / 90)
+            factor = 1 - (angle / 90)
             if factor < MIN_ASTEROID_SPLIT_FACTOR:
                 return MIN_ASTEROID_SPLIT_FACTOR
             else:
                 return factor
         elif angle <= 360:
             angle = angle - 270
-            factor = (angle / 90)
+            factor = 1 - (angle / 90)
             if factor < MIN_ASTEROID_SPLIT_FACTOR:
                 return MIN_ASTEROID_SPLIT_FACTOR
             else:
