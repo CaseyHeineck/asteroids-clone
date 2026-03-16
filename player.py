@@ -7,7 +7,8 @@ class Player(CircleShape):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.shot_cooldown = 0
-        self.lives = 2
+        self.lives = 3
+        self.life = True
 
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
@@ -28,6 +29,31 @@ class Player(CircleShape):
             shot = Shot(self.position.x, self.position.y, SHOT_RADIUS)
             shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
             self.shot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
+
+    def respawn(self, time):
+        death_time = time
+        self.lives -= 1
+        self.life = False
+        self.position.x = SCREEN_WIDTH / 2
+        self.position.y = SCREEN_HEIGHT / 2
+        if self.invulnerable is True:
+            current_time = time
+            respawn_timer = current_time - death_time 
+            if respawn_timer < PLAYER_RESPAWN_COOLDOWN_SECONDS:
+                return
+            else:
+                self.life = True
+            
+    def collides_with(self, other):
+        if self.invulnerable is True:
+            return False
+        return super().collides_with(other)
+    
+    def invulnerable(self):
+        if self.life is not True:
+            return True
+        else:
+            return False
 
     def update(self, dt):
         keys = pygame.key.get_pressed()
