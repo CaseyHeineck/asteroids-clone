@@ -1,6 +1,8 @@
+import sys
 from circleshape import *
 from constants import *
 from shot import *
+from logger import log_event
 
 class Player(CircleShape):
     def __init__(self, x, y):
@@ -9,7 +11,8 @@ class Player(CircleShape):
         self.shot_cooldown = 0
         self.lives = 3
         self.life = True
-
+        self.invulnerable = False
+        
     def draw(self, screen):
         pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
 
@@ -30,30 +33,44 @@ class Player(CircleShape):
             shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
             self.shot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
 
-    def respawn(self, time):
-        death_time = time
+    def lose_life(self, HUD, respawn_timer, dt):
+        log_event("player_hit")
+        if self.lives > 0:
+            HUD.update_score(LIFE_LOSS_SCORE * self.lives)
+            self.respawn(respawn_timer, dt)
+            log_event("player_respawned")
+            respawn_timer = 0
+        else:
+            HUD.update_score(GAME_OVER_SCORE)
+            log_event("game_over")
+            print(f"Score: {HUD.score}")    
+            print("Game over!")
+            sys.exit()
+
+    def respawn(self, respawn_timer, dt):
         self.lives -= 1
         self.life = False
         self.position.x = SCREEN_WIDTH / 2
         self.position.y = SCREEN_HEIGHT / 2
+        self.is_invulnerable()
         if self.invulnerable is True:
-            current_time = time
-            respawn_timer = current_time - death_time 
             if respawn_timer < PLAYER_RESPAWN_COOLDOWN_SECONDS:
+                respawn_timer += dt
                 return
             else:
                 self.life = True
+                self.is_invulnerable()
             
     def collides_with(self, other):
         if self.invulnerable is True:
             return False
         return super().collides_with(other)
     
-    def invulnerable(self):
+    def is_invulnerable(self):
         if self.life is not True:
-            return True
+            self.invulnerable = True
         else:
-            return False
+            self.invulnerable = False
 
     def update(self, dt):
         keys = pygame.key.get_pressed()
