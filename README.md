@@ -5,8 +5,8 @@
             * Scoring is now handled in the display class
     - Have a small popup showing the amount being added to total when destructed
 * ~~Implement multiple lives and respawning~~
-    * ~~respawning is now handled within the player class~~
     - Show on screen how many lives the player has left
+    * ~~respawning is now handled within the player class~~
     * ~~Implement a cooldown system so player does not die on respawn too quickly~~
         * ~~Feels like I should be close to getting this to work, respawn properly calls player method now~~
         * ~~player method doesn't properly flag if the player is still invulnberable around the time~~
