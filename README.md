@@ -16,6 +16,7 @@
     * ~~Add visual effect to ship while respawn cooldown~~
 * Add an explosion effect for the asteroids
 * Add acceleration to the player movement
+    * ~~Added boost and strafe functionality to player movement~~
 * Make the objects wrap around the screen instead of disappearing
 * Add a background image
 * Create different weapon types
