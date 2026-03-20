@@ -31,7 +31,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-        screen.fill("black")
+        screen.fill(BLACK)
         HUD.draw(screen)
         for object in drawable:
             object.draw(screen)
@@ -53,4 +53,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

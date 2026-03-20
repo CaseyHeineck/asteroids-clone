@@ -4,6 +4,8 @@
         * ~~Implement higher scoring for larger asteroids~~
             * Scoring is now handled in the display class
     - Have a small popup showing the amount being added to total when destructed
+    * ~~Added health to each asteroid dependent on its size~~
+        * Shows a health bar on the asteroid when the asteroid is damaged
 * ~~Implement multiple lives and respawning~~
     * ~~Show on screen how many lives the player has left~~
     * ~~respawning is now handled within the player class~~

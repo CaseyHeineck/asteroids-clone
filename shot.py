@@ -7,13 +7,12 @@ class Shot(CircleShape):
         super().__init__(x, y, radius)
 
     def hits(self, asteroid, HUD):
-        log_event("asteroid_shot")
-        HUD.update_score(BASE_SCORE * (asteroid.radius / ASTEROID_MIN_RADIUS))                    
-        asteroid.split()
+        log_event("asteroid_shot")                    
+        asteroid.split(SHOT_DAMAGE, HUD)
         self.kill()
 
     def draw(self, screen):
-        pygame.draw.circle(screen, "white", self.position, self.radius, LINE_WIDTH)
+        pygame.draw.circle(screen, WHITE, self.position, self.radius, LINE_WIDTH)
 
     def update(self, dt):
         self.position += self.velocity * dt

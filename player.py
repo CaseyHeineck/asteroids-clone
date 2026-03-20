@@ -17,9 +17,9 @@ class Player(CircleShape):
         
     def draw(self, screen):
         if self.vulnerable:
-            pygame.draw.polygon(screen, "red", self.triangle(), LINE_WIDTH)
+            pygame.draw.polygon(screen, RED, self.triangle(), LINE_WIDTH)
         else:            
-            pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)
+            pygame.draw.polygon(screen, WHITE, self.triangle(), LINE_WIDTH)
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -52,7 +52,7 @@ class Player(CircleShape):
         else:
             log_event("game_over")
             HUD.update_score(GAME_OVER_SCORE)
-            print(f"Score: {int(HUD.score)}")    
+            print(f"Score: {int(HUD.score)}")
             print("Game over!")
             sys.exit()
     

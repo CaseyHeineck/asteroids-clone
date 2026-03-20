@@ -1,7 +1,8 @@
 import pygame
+from constants import *
 
 class Display:
-    def __init__(self, x, y, font_size=50, color=(255, 255, 255)):
+    def __init__(self, x, y, font_size=50, color=WHITE):
         if hasattr(self, "containers"):
             super().__init__(self.containers)
         else:
