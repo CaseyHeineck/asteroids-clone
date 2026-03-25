@@ -15,7 +15,7 @@
             * ~~Abandoned invulnerable idea for respawn, respawn cooldown uses player update properly now~~
     * ~~Add visual effect to ship while respawn cooldown~~
 * Add an explosion effect for the asteroids
-* Add acceleration to the player movement
+* ~~Add acceleration to the player movement~~
     * ~~Added boost and strafe functionality to player movement~~
 * Make the objects wrap around the screen instead of disappearing
 * Add a background image
@@ -25,7 +25,12 @@
 * Add a shield power-up
 * Add bombs that can be dropped
 ## Shaping the future of the game:
-* Having Start Game Menu
+* ~~Having Start Game Menu~~
+    * Add settings/options button
+        * Add customizable settings
+    * Add upgrade menus
+        * Various different branching upgrade possibilities
+    * Add index/reference menus
 * Game should play much more like a avoid the obstacle type game
     * As acceleration is added along with gravitational like forces, movement will become a huge gameplay factor
 * Implement drones for automatic mining/destroying of asteroids
@@ -48,4 +53,5 @@
     * In gameplay that is inspired by Stand Survivors
         * Start in a random asteroid field where the player can warp around the edges of that screen
         * After player collects certain amount of currency, can unlock a warp to a new screen
-* Having Game End Screen
+* ~~Having Game End Screen~~
+    * Fix program so that if you start a new game it doesn't crash
