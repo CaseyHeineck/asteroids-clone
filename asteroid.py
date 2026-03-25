@@ -19,15 +19,21 @@ class Asteroid(CircleShape):
     def draw_health_bar(self, screen):
         health_ratio = self.health / self.full_health
         width = self.radius
-
-        background_rect = pygame.Rect(self.position.x - (width / 2), (self.position.y - (self.size * 2)), width, (HEALTH_BAR_HEIGHT + (self.size * 2)))
-        pygame.draw.rect(screen, BLACK, background_rect)
-        
+        background_rect = pygame.Rect(
+            self.position.x - (width / 2), 
+            self.position.y - (self.size * 2), 
+            width, 
+            HEALTH_BAR_HEIGHT + (self.size * 2)
+            )
+        pygame.draw.rect(screen, BLACK, background_rect)        
         current_width = width * health_ratio
-        health_rect = pygame.Rect(self.position.x - (width / 2), (self.position.y - (self.size * 2)), current_width, (HEALTH_BAR_HEIGHT + (self.size * 2)))
-        
+        health_rect = pygame.Rect(
+            self.position.x - (width / 2), 
+            self.position.y - (self.size * 2), 
+            current_width, 
+            HEALTH_BAR_HEIGHT + (self.size * 2)
+            )        
         pygame.draw.rect(screen, RED, health_rect)
-
         pygame.draw.rect(screen, WHITE, background_rect, LINE_WIDTH)
 
     def update(self, dt):

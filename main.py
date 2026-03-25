@@ -5,7 +5,7 @@ from asteroid import *
 from asteroidfield import *
 from constants import *
 from display import *
-# from drone import *
+from drone import *
 from shot import *
 from player import *
 from logger import *
@@ -23,7 +23,7 @@ def main():
     drawable = None
     asteroids = None
     asteroid_field = None
-#    drones = None    
+    drones = None    
     HUD = None
     shots = None
     player = None
@@ -35,16 +35,19 @@ def main():
         drawable = pygame.sprite.Group()
         asteroids = pygame.sprite.Group()
         shots = pygame.sprite.Group()
-    #    drones = pygame.sprite.Group()
+        drones = pygame.sprite.Group()
         HUD = Display(10, 10)
+
         Player.containers = (updatable, drawable)
         Asteroid.containers = (asteroids, updatable, drawable)
         AsteroidField.containers = (updatable,)
         Shot.containers = (shots, drawable, updatable)
         Display.containers = (HUD, drawable, updatable)
-    #    Drone.containers = (drones, drawable, updatable)    
+        Drone.containers = (drones, drawable, updatable)  
+
         asteroid_field = AsteroidField()
         player = Player((SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2))
+        drone = Drone(player, asteroids)
 
     def on_new_game():
         nonlocal current_state, game_over_menu
@@ -72,11 +75,9 @@ def main():
 
     def on_game_over():
         nonlocal current_state, game_over_menu
-
         score = 0
         if hasattr(HUD, "score"):
             score = HUD.score
-
         game_over_menu = create_game_over_menu(
             on_new_game,
             on_main_menu,

@@ -32,23 +32,23 @@ class Player(CircleShape):
     def decelerate(self, dt):
         if self.speed < 0:
             self.speed += PLAYER_DECELERATION_RATE * dt
-        if self.speed > 0:
+        elif self.speed > 0:
             self.speed -= PLAYER_DECELERATION_RATE * dt
-        if self.speed == 0:
+        elif self.speed == 0:
             return
 
     def brake(self, dt):
         if self.speed < 0:
             self.speed += PLAYER_BRAKE_SPEED * dt
-        if self.speed > 0:
+        elif self.speed > 0:
             self.speed -= PLAYER_BRAKE_SPEED * dt
-        if self.speed == 0:
+        elif self.speed == 0:
             return
 
     def move(self, dt):
         unit_vector = pygame.Vector2(0, 1)
         rotated_vector = unit_vector.rotate(self.rotation)
-        rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
+        rotated_with_speed_vector = rotated_vector * self.speed * dt
         self.position += rotated_with_speed_vector
 
     def strafe(self, dt):
@@ -56,14 +56,6 @@ class Player(CircleShape):
         rotated_vector = unit_vector.rotate((self.rotation + 90))
         rotated_with_speed_vector = rotated_vector * PLAYER_STRAFE_SPEED * dt
         self.position += rotated_with_speed_vector
-
-    def shoot(self):
-        if self.shot_cooldown > 0:
-            return
-        else:
-            shot = Shot(self.position.x, self.position.y, SHOT_RADIUS)
-            shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
-            self.shot_cooldown = PLAYER_SHOOT_COOLDOWN_SECONDS
 
     def respawn(self, HUD):
         log_event("player_hit")
@@ -82,61 +74,49 @@ class Player(CircleShape):
             self.game_over = True
     
     def update(self, dt):
-#       self.wrap_edges()
         keys = pygame.key.get_pressed()
+
         if keys[pygame.K_SPACE]:
-            self.shoot()
+            self.brake(dt)        
         
         if keys[pygame.K_RSHIFT] or keys[pygame.K_LSHIFT]:
             if keys[pygame.K_RCTRL] or keys[pygame.K_LCTRL]:
                 if keys[pygame.K_w]:
-                    self.move(dt * 2)
+                    self.accelerate(dt * 2)
                 if keys[pygame.K_s]:
-                    self.move(-dt * 2)
+                    self.accelerate(-dt * 2)
                 if keys[pygame.K_a]:
                     self.strafe(-dt)
                 if keys[pygame.K_d]:
                     self.strafe(dt)
             else:
                 if keys[pygame.K_w]:
-                    self.move(dt * 2)
+                    self.accelerate(dt * 2)
                 if keys[pygame.K_s]:
-                    self.move(-dt * 2)
+                    self.accelerate(-dt * 2)
                 if keys[pygame.K_a]:
                     self.rotate(-dt)
                 if keys[pygame.K_d]:
                     self.rotate(dt)                    
         elif keys[pygame.K_RCTRL] or keys[pygame.K_LCTRL]:
-            if keys[pygame.K_RSHIFT] or keys[pygame.K_LSHIFT]:
-                if keys[pygame.K_a]:
-                    self.strafe(-dt)
-                if keys[pygame.K_d]:
-                    self.strafe(dt)
-                if keys[pygame.K_w]:
-                    self.move(dt * 2)
-                if keys[pygame.K_s]:
-                    self.move(-dt * 2)
-            else:
-                if keys[pygame.K_a]:
-                    self.strafe(-dt)
-                if keys[pygame.K_d]:
-                    self.strafe(dt)
-                if keys[pygame.K_w]:
-                    self.move(dt)
-                if keys[pygame.K_s]:
-                    self.move(-dt)                                                           
+            if keys[pygame.K_a]:
+                self.strafe(-dt)
+            if keys[pygame.K_d]:
+                self.strafe(dt)
+            if keys[pygame.K_w]:
+                self.accelerate(dt)
+            if keys[pygame.K_s]:
+                self.accelerate(-dt)                                                           
         else:
             if keys[pygame.K_a]:
                 self.rotate(-dt)
             if keys[pygame.K_d]:
                 self.rotate(dt)
             if keys[pygame.K_w]:
-                self.move(dt)
+                self.accelerate(dt)
             if keys[pygame.K_s]:
-                self.move(-dt)
+                self.accelerate(-dt)
         
-        self.shot_cooldown -= dt
-
         if self.life is not True:
             if self.blink_timer < PLAYER_BLINK_TIMER:
                 self.blink_timer += dt
@@ -153,7 +133,9 @@ class Player(CircleShape):
                 self.life = True
                 self.respawn_timer = 0 
         else:
-            self.vulnerable = True     
+            self.vulnerable = True
+        self.move(dt)
+        self.decelerate(dt)     
 
     def triangle(self):    
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
