@@ -1,13 +1,13 @@
 import pygame
-import pygame_menu
 import sys
 from asteroid import *
 from asteroidfield import *
 from constants import *
 from display import *
 from drone import *
-from shot import *
+from explosion import *
 from player import *
+from projectile import *
 from logger import *
 from menus import *
 
@@ -23,31 +23,36 @@ def main():
     drawable = None
     asteroids = None
     asteroid_field = None
-    drones = None    
+    drones = None
+    explosions = None    
     HUD = None
-    shots = None
+    projectiles = None
     player = None
 
     def create_game():
-        nonlocal updatable, drawable, asteroids, shots, HUD, player, asteroid_field
+        nonlocal updatable, drawable, asteroids, drones, explosions, projectiles, HUD, player, asteroid_field
 
         updatable = pygame.sprite.Group()
         drawable = pygame.sprite.Group()
         asteroids = pygame.sprite.Group()
-        shots = pygame.sprite.Group()
+        projectiles = pygame.sprite.Group()
         drones = pygame.sprite.Group()
+        explosions = pygame.sprite.Group()
         HUD = Display(10, 10)
 
-        Player.containers = (updatable, drawable)
         Asteroid.containers = (asteroids, updatable, drawable)
         AsteroidField.containers = (updatable,)
-        Shot.containers = (shots, drawable, updatable)
+        Projectile.containers = (projectiles, drawable, updatable)
+        Player.containers = (updatable, drawable)
         Display.containers = (HUD, drawable, updatable)
-        Drone.containers = (drones, drawable, updatable)  
+        Drone.containers = (drones, drawable, updatable)
+        Explosion.containers = (explosions, drawable, updatable)  
 
         asteroid_field = AsteroidField()
         player = Player((SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2))
-        drone = Drone(player, asteroids)
+        player.add_drone(PlasmaDrone, asteroids)
+        player.add_drone(KineticDrone, asteroids)
+        player.add_drone(ExplosiveDrone, asteroids)
 
     def on_new_game():
         nonlocal current_state, game_over_menu
@@ -82,7 +87,7 @@ def main():
             on_new_game,
             on_main_menu,
             on_exit,
-            score=score
+            score = score
         )
         current_state = GAME_OVER
 
@@ -98,6 +103,17 @@ def main():
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, alpha))
         screen.blit(overlay, (0, 0))
+    
+    def wrap_object(obj):
+        if obj.position.x < 0:
+            obj.position.x += SCREEN_WIDTH
+        elif obj.position.x > SCREEN_WIDTH:
+            obj.position.x -= SCREEN_WIDTH
+
+        if obj.position.y < 0:
+            obj.position.y += SCREEN_HEIGHT
+        elif obj.position.y > SCREEN_HEIGHT:
+            obj.position.y -= SCREEN_HEIGHT
 
     main_menu = create_main_menu(on_new_game, on_exit)
     pause_menu = create_pause_menu(on_resume, on_restart, on_main_menu, on_exit)
@@ -107,16 +123,16 @@ def main():
         time = clock.tick(60)
         dt = time / 1000
         events = pygame.event.get()
-        keys = pygame.key.get_pressed()
 
         for event in events:
             if event.type == pygame.QUIT:
                 on_exit()
-            if keys == pygame.K_ESCAPE:
-                if current_state == GAME_RUNNING:
-                    current_state = PAUSED
-                if current_state == PAUSED:
-                    current_state = GAME_RUNNING
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:    
+                    if current_state == GAME_RUNNING:
+                        current_state = PAUSED
+                    elif current_state == PAUSED:
+                        current_state = GAME_RUNNING
 
         if current_state == MAIN_MENU:
             screen.fill(BLACK)
@@ -126,15 +142,18 @@ def main():
         elif current_state == GAME_RUNNING:
             log_state()        
             updatable.update(dt)
+            wrap_object(player)
             for asteroid in asteroids:
+                wrap_object(asteroid)
                 if player.life:       
                     if asteroid.collides_with(player):
                         player.respawn(HUD)
                         if player.game_over is True:
                             on_game_over()
-                for shot in shots:
-                    if shot.collides_with(asteroid):
-                        shot.hits(asteroid, HUD)
+                for projectile in projectiles:
+                    if projectile.collides_with(asteroid):
+                        projectile.on_hit(asteroid, HUD)
+                        
             draw_game()
 
         elif current_state == PAUSED:
@@ -150,19 +169,11 @@ def main():
             game_over_menu.draw(screen)
       
         pygame.display.flip()        
-        
-        
-        
-        
+            
         # if player exp above current level exp require:
         #     player.add_drone()
-        #     for drone in drones:            
-        
-        #     check_off_screen(asteroid)
-        # check_off_screen(player)
-        # check_off_screen(drone) 
-    
-        
+        #     for drone in drones:  
+               
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
@@ -170,12 +181,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-# def check_off_screen(object):
-#     if object.position.x < 0:
-#         object.position.x += SCREEN_WIDTH
-#     if object.position.x > SCREEN_WIDTH:
-#         object.position.x -= SCREEN_WIDTH
-#     if object.position.y < 0:
-#         object.position.y += SCREEN_HEIGHT
-#     if object.position.y > SCREEN_HEIGHT:
-#         object.position.y -= SCREEN_HEIGHT
+

@@ -1,7 +1,7 @@
-import sys
-from circleshape import *
+import pygame
+from circleshape import CircleShape
 from constants import *
-from shot import *
+from drone import ExplosiveDrone, KineticDrone, PlasmaDrone
 from logger import log_event
 
 class Player(CircleShape):
@@ -16,6 +16,7 @@ class Player(CircleShape):
         self.vulnerable = True
         self.speed = 0
         self.game_over = False
+        self.drones = []
         
     def draw(self, screen):
         if self.vulnerable:
@@ -86,9 +87,9 @@ class Player(CircleShape):
                 if keys[pygame.K_s]:
                     self.accelerate(-dt * 2)
                 if keys[pygame.K_a]:
-                    self.strafe(-dt)
+                    self.strafe(-dt * 2)
                 if keys[pygame.K_d]:
-                    self.strafe(dt)
+                    self.strafe(dt * 2)
             else:
                 if keys[pygame.K_w]:
                     self.accelerate(dt * 2)
@@ -143,4 +144,21 @@ class Player(CircleShape):
         a = self.position + forward * self.radius
         b = self.position - forward * self.radius - right
         c = self.position - forward * self.radius + right
-        return [a, b, c]    
+        return [a, b, c]
+
+    def add_drone(self, drone_class, asteroids):
+        new_drone = drone_class(self, asteroids)
+        self.drones.append(new_drone)
+        self.rebalance_drones()
+        return new_drone
+
+    def rebalance_drones(self):
+        drone_count = len(self.drones)
+        if drone_count == 0:
+            return
+
+        angle_step = 360 / drone_count
+        starting_angle = self.drones[0].orbit_angle
+
+        for i, drone in enumerate(self.drones):
+            drone.orbit_angle = starting_angle + (i * angle_step)    

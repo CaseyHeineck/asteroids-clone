@@ -14,10 +14,12 @@
         * ~~player method doesn't properly flag if the player is still invulnberable around the time~~
             * ~~Abandoned invulnerable idea for respawn, respawn cooldown uses player update properly now~~
     * ~~Add visual effect to ship while respawn cooldown~~
-* Add an explosion effect for the asteroids
+* ~~Add an explosion effect for the asteroids~~
+    * Add detail and specialization for each kind of explosion
 * ~~Add acceleration to the player movement~~
     * ~~Added boost and strafe functionality to player movement~~
-* Make the objects wrap around the screen instead of disappearing
+* ~~Make the objects wrap around the screen instead of disappearing~~
+    * Projectiles that miss still go off screen
 * Add a background image
 * Make the asteroids lumpy instead of perfectly round
 * Make the ship have a triangular hit box instead of a circular one
